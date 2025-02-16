@@ -1,0 +1,62 @@
+<html>
+  <head> </head>
+  <body>
+    <div>
+      <div id="step-1" style="display: block; margin: 100px">
+        <p>Paragraph 1 Paragraph 1 Paragraph 1 Paragraph 1 Paragraph 1</p>
+      </div>
+      <div id="step-2" style="display: none; margin: 100px">
+        <p>Paragraph 2 Paragraph 2 Paragraph 2 Paragraph 2 Paragraph 2</p>
+      </div>
+      <div id="step-3" style="display: none; margin: 100px">
+        <p>Paragraph 3 Paragraph 3 Paragraph 3 Paragraph 3 Paragraph 3</p>
+      </div>
+      <div id="mypopover" popover>Popover content</div>
+    </div>
+    <script type="text/javascript">
+      const step1 = document.querySelector("#step-1");
+      const step2 = document.querySelector("#step-2");
+      const step3 = document.querySelector("#step-3");
+
+      step1.addEventListener("click", () => {
+        step2.style = "display: block; margin: 100px";
+        step1.append("Clicked");
+      });
+
+      step2.addEventListener("click", () => {
+        step3.style = "display: block; margin: 100px";
+        step2.append("Clicked");
+      });
+      step3.addEventListener("click", () => {
+        step3.append("Clicked");
+      });
+    </script>
+    <script type="module">
+      import { BatchInstructionDecoder, BatchInstructionEncoder, ActionSelector } from 'http://localhost:8080/esm/index.js';
+
+      const searchParams = new URLSearchParams(document.location.search);
+      const navigationQuery = searchParams.get("navigation");
+      if (!navigationQuery) {
+        const navigationQs = new BatchInstructionEncoder().encode([
+          { action: "c", selector: "#step-1" },
+          { action: "c", selector: "#step-2" },
+          { action: "c", selector: "#step-3" },
+          { action: "c", selector: "#step-4" },
+          { action: "tp", selector: "#mypopover" },
+        ]);
+        const url = new URL(window.location.href.toString());
+        url.searchParams.set('navigation', navigationQs)
+        window.location.href = url.toString();
+      }
+
+      const instructions = new BatchInstructionDecoder().decode(navigationQuery);
+      const result = new ActionSelector({
+        container: document.body,
+        instructions,
+        actions: { aliases: { c: "click", tp: "togglePopover" } },
+      }).execute();
+
+      console.log(result);
+    </script>
+  </body>
+</html>
