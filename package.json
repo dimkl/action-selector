@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsup",
     "dev": "npm run build -- --watch",
-    "lint": "eslint .",
+    "lint": "eslint src/",
     "format": "prettier --ignore-path .gitignore --write \"src/*.ts\"",
     "test": "vitest",
     "test:site": "npm run build && cp test/index.html dist/ && npx http-server dist/"
