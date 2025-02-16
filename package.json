@@ -1,0 +1,48 @@
+{
+  "name": "@dimkl/action-selector",
+  "version": "0.0.1",
+  "description": "Library that allows invoking actions for a specific selector",
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsup",
+    "dev": "npm run build -- --watch",
+    "lint": "eslint .",
+    "format": "prettier --ignore-path .gitignore --write \"src/*.ts\"",
+    "test": "vitest",
+    "test:site": "npm run build && cp test/index.html dist/ && npx http-server dist/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dimkl/action-selector.git"
+  },
+  "keywords": [
+    "selector",
+    "action",
+    "invoke",
+    "shortcut"
+  ],
+  "author": "Dimitris Klouvas",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dimkl/action-selector/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://github.com/dimkl/action-selector#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.20.0",
+    "@typescript-eslint/eslint-plugin": "^8.24.0",
+    "@typescript-eslint/parser": "^8.24.0",
+    "eslint": "^9.20.1",
+    "globals": "^15.15.0",
+    "prettier": "^3.5.1",
+    "tsup": "^8.3.6",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.24.0",
+    "vitest": "^3.0.5"
+  }
+}
