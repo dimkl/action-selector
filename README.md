@@ -21,5 +21,5 @@ Open `http://localhost:8080/index.html` in browser to check if library is workin
 
 Expectations:
 - automatically redirected to `http://localhost:8080/index.html?navigation=...`
-- all 3 paragraphs are automatically clicked and it's visible since `Clicked` text is added in each one of those
+- all 3 paragraphs are automatically clicked (can be confirmed with the added `Clicked` text)
 - the result of the invoked action is visible in console log as `{success: false, errors: Array(1)}`
