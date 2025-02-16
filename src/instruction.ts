@@ -22,14 +22,6 @@ export interface Instruction {
 export type SerializedInstruction = `${Action}=${Selector}`;
 
 export class InstructionEncoder {
-  encode(instruction: Instruction): string {
-    return `${instruction.action}=${instruction.selector}`;
-  }
-}
-
-export class BatchInstructionEncoder {
-  #encoder = new InstructionEncoder();
-
   hexEncode(value: string) {
     const utf8encoder = new TextEncoder();
     const rb = utf8encoder.encode(value);
@@ -40,12 +32,28 @@ export class BatchInstructionEncoder {
     return r;
   }
 
+  encode(instruction: Instruction): string {
+    return `${instruction.action}=${instruction.selector}`;
+  }
+}
+
+export class BatchInstructionEncoder {
+  #encoder = new InstructionEncoder();
+
   encode(instructions: Instruction[]): string {
-    return this.hexEncode(instructions.map(this.#encoder.encode).join("|"));
+    return this.#encoder.hexEncode(
+      instructions.map(this.#encoder.encode).join("|"),
+    );
   }
 }
 
 export class InstructionDecoder {
+  hexDecode(str: string) {
+    return decodeURIComponent(
+      str.replace(/[0-9a-f]{2}/g, "%$&"), // add '%' before each 2 characters
+    );
+  }
+
   decode(value: string): Instruction {
     const parts = value.split("=");
     if (parts.length !== 2) {
@@ -59,19 +67,13 @@ export class InstructionDecoder {
 export class BatchInstructionDecoder {
   #decoder = new InstructionDecoder();
 
-  hexDecode(str: string) {
-    return decodeURIComponent(
-      str.replace(/[0-9a-f]{2}/g, "%$&"), // add '%' before each 2 characters
-    );
-  }
-
   decode(value: string): Instruction[] {
-    return this.hexDecode(value).split("|").map(this.#decoder.decode);
+    return this.#decoder.hexDecode(value).split("|").map(this.#decoder.decode);
   }
 }
 
 export class InstructionInvoker {
-  constructor(readonly customActions: Record<string, Fn>) {}
+  constructor(readonly customActions: Record<string, Fn> = {}) {}
 
   find(actionName: Action, el: Element): Fn | undefined {
     let fn;

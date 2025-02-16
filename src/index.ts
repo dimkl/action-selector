@@ -6,3 +6,5 @@ export {
   InstructionDecoder,
   BatchInstructionDecoder,
 } from "./instruction";
+
+export { InvalidSelectorError } from "./errors";

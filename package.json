@@ -9,8 +9,8 @@
   "scripts": {
     "build": "tsup",
     "dev": "npm run build -- --watch",
-    "lint": "eslint src/",
-    "format": "prettier --ignore-path .gitignore --write \"src/*.ts\"",
+    "lint": "eslint src/ test/",
+    "format": "prettier --ignore-path .gitignore --write \"(src|test)/*.ts\"",
     "test": "vitest",
     "test:site": "npm run build && cp test/index.html dist/ && npx http-server dist/",
     "prepare": "husky install"
@@ -41,6 +41,7 @@
     "eslint": "^9.20.1",
     "globals": "^15.15.0",
     "husky": "^9.1.7",
+    "jsdom": "^26.0.0",
     "lint-staged": "^15.4.3",
     "prettier": "^3.5.1",
     "tsup": "^8.3.6",
