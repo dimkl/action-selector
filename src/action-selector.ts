@@ -11,11 +11,11 @@ type ActionAlias = Record<string, Action>;
 interface ActionSelectorConfig {
   container: Element | string;
   instructions: Instruction[];
-  actions: {
+  actions?: {
     mapper?: ActionMapper;
     aliases?: ActionAlias;
   };
-  logger: Logger;
+  logger?: Logger;
 }
 interface ActionSelectorResult {
   success: boolean;
