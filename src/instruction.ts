@@ -8,30 +8,11 @@ export const ACTIONS = [
   "showPopover",
   "togglePopover",
 ] as const;
-export const EVENTS = [
-  "beforetoggle",
-  "change",
-  "commandExperimental",
-  "copy",
-  "cut",
-  "drag",
-  "dragend",
-  "dragenter",
-  "dragleave",
-  "dragover",
-  "dragstart",
-  "drop",
-  "error",
-  "load",
-  "paste",
-  "toggle",
-] as const;
 
 export type Selector = string;
 export type Fn = (...a: unknown[]) => void;
 export type MethodAction = (typeof ACTIONS)[number];
-export type EventAction = (typeof EVENTS)[number];
-export type Action = MethodAction | EventAction;
+export type Action = MethodAction;
 
 export interface Instruction {
   action: Action;
@@ -89,19 +70,13 @@ export class BatchInstructionDecoder {
 }
 
 export class InstructionInvoker {
-  constructor(readonly customActions:  Record<string, Fn>) {}
+  constructor(readonly customActions: Record<string, Fn>) {}
 
   find(actionName: Action, el: Element): Fn | undefined {
     let fn;
     if (this.customActions[actionName]) {
       fn = this.customActions[actionName];
-    }
-    // @ts-expect-error Should be fixed somehow
-    else if (EVENTS.includes(actionName)) {
-      fn = el[`on${actionName}`] && el[`on${actionName}`];
-    }
-    // @ts-expect-error Should be fixed somehow
-    else if (ACTIONS.includes(actionName)) {
+    } else if (ACTIONS.includes(actionName)) {
       fn = el[actionName] && el[actionName];
     }
     return fn;
