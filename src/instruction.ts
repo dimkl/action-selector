@@ -9,8 +9,9 @@ export const ACTIONS = [
   "togglePopover",
 ] as const;
 
-export type Selector = string;
 export type Fn = (...a: unknown[]) => void;
+
+export type Selector = string;
 export type MethodAction = (typeof ACTIONS)[number];
 export type Action = MethodAction;
 
