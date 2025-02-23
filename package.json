@@ -7,11 +7,14 @@
   "types": "./dist/index.d.ts",
   "type": "module",
   "scripts": {
+    "prebuild": "rimraf dist",
+    "prepublishOnly": "npm run build",
+    "preversion": "npm test",
     "build": "tsup",
     "dev": "npm run build -- --watch",
     "lint": "eslint src/ test/",
     "format": "prettier --ignore-path .gitignore --write \"(src|test)/*.ts\"",
-    "test": "vitest",
+    "test": "vitest run",
     "test:site": "npm run build && cp test/index.html dist/ && npx http-server dist/",
     "prepare": "husky install"
   },
@@ -44,6 +47,7 @@
     "jsdom": "^26.0.0",
     "lint-staged": "^15.4.3",
     "prettier": "^3.5.1",
+    "rimraf": "^6.0.1",
     "tsup": "^8.3.6",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.24.0",
