@@ -1,4 +1,8 @@
 import { InvalidEncodedInstructionError } from "./errors";
+import { EchoFormatter, HexFormatter } from "./formatter";
+import type { Formatter } from "./formatter";
+import { EchoParser, HexParser } from "./parser";
+import type { Parser } from "./parser";
 
 export const ACTIONS = [
   "blur",
@@ -22,40 +26,43 @@ export interface Instruction {
 export type SerializedInstruction = `${Action}=${Selector}`;
 
 export class InstructionEncoder {
-  hexEncode(value: string) {
-    const utf8encoder = new TextEncoder();
-    const rb = utf8encoder.encode(value);
-    let r = "";
-    for (const b of rb) {
-      r += ("0" + b.toString(16)).slice(-2);
-    }
-    return r;
+  #formatter: Formatter;
+
+  constructor(formatter: Formatter = new EchoFormatter()) {
+    this.#formatter = formatter;
   }
 
   encode(instruction: Instruction): string {
-    return `${instruction.action}=${instruction.selector}`;
+    return this.#formatter.format(
+      `${instruction.action}=${instruction.selector}`,
+    );
   }
 }
 
 export class BatchInstructionEncoder {
   #encoder = new InstructionEncoder();
+  #formatter: Formatter;
+
+  constructor(formatter: Formatter = new HexFormatter()) {
+    this.#formatter = formatter;
+  }
 
   encode(instructions: Instruction[]): string {
-    return this.#encoder.hexEncode(
-      instructions.map(this.#encoder.encode).join("|"),
+    return this.#formatter.format(
+      instructions.map(i => this.#encoder.encode(i)).join("|"),
     );
   }
 }
 
 export class InstructionDecoder {
-  hexDecode(str: string) {
-    return decodeURIComponent(
-      str.replace(/[0-9a-f]{2}/g, "%$&"), // add '%' before each 2 characters
-    );
+  #parser: Parser;
+
+  constructor(parser: Parser = new EchoParser()) {
+    this.#parser = parser;
   }
 
   decode(value: string): Instruction {
-    const parts = value.split("=");
+    const parts = this.#parser.parse(value).split("=");
     if (parts.length !== 2) {
       throw new InvalidEncodedInstructionError(value);
     }
@@ -66,9 +73,17 @@ export class InstructionDecoder {
 
 export class BatchInstructionDecoder {
   #decoder = new InstructionDecoder();
+  #parser: Parser;
+
+  constructor(parser: Parser = new HexParser()) {
+    this.#parser = parser;
+  }
 
   decode(value: string): Instruction[] {
-    return this.#decoder.hexDecode(value).split("|").map(this.#decoder.decode);
+    return this.#parser
+      .parse(value)
+      .split("|")
+      .map(i => this.#decoder.decode(i));
   }
 }
 
