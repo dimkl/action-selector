@@ -1,6 +1,6 @@
 {
   "name": "@dimkl/action-selector",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Library that allows invoking actions for a specific selector",
   "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",
